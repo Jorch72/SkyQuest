@@ -26,7 +26,7 @@ public class SkyQuestPlugin extends JavaPlugin implements Listener
 	@Override
 	public void onEnable()
 	{
-		
+		getServer().getPluginManager().registerEvents(this, this);
 		getLogger().info(getDescription().getVersion() + " successfully enabled!");
 	}
 	
