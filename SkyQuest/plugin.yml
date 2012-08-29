@@ -4,3 +4,24 @@ version: 0.1
 author: Schmoller and _Razz_
 
 main: au.com.mineauz.SkyQuest.SkyQuestPlugin
+
+commands:
+  skyquest:
+    description: Sky Quest base command
+    usage: Type '/skyquest help' for help.
+    permission: skyquest.skyquest
+    permission-message: You must have <permission> to use skyquest commands!
+
+permissions:
+  skyquest.*:
+    description: All Sky Quest permissions.
+    children:
+      skyquest.skyquest: true
+      skyquest.help: true
+      
+  skyquest.skyquest:
+    description: Access to the skyquest command.
+    default: op
+  skyquest.help:
+    description: Allows a player to access the help command.
+    default: op
