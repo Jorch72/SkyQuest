@@ -26,7 +26,7 @@ public class DebugPedestal extends PedestalBase
 		
 		if(books.isEmpty())
 		{
-			player.getInventory().addItem(new MagicBook());
+			player.getInventory().addItem(new MagicBook(player.getName()));
 			player.updateInventory();
 			player.sendMessage("Gave you a magic book");
 		}
@@ -51,7 +51,7 @@ public class DebugPedestal extends PedestalBase
 			
 			if(!found)
 			{
-				player.getInventory().addItem(new MagicBook());
+				player.getInventory().addItem(new MagicBook(player.getName()));
 				player.updateInventory();
 				player.sendMessage("Gave you a magic book");
 			}

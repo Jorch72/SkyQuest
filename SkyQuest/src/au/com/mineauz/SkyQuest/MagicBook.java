@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class MagicBook extends Book
 {
-	public MagicBook()
+	public MagicBook(String owner)
 	{
 		setTitle("The Sky Quest");
 		setAuthor("Unknown");
@@ -14,6 +14,7 @@ public class MagicBook extends Book
 		addPage("Something something dark side");
 		
 		getHandle().tag.setBoolean("MagicBook", true);
+		setOwner(owner);
 	}
 	public MagicBook(ItemStack item)
 	{
@@ -43,5 +44,13 @@ public class MagicBook extends Book
 			return true;
 		
 		return false;
+	}
+	
+	public void setOwner(String player){
+		getHandle().tag.setString("Owner", player);
+	}
+	
+	public String getOwner(){
+		return getHandle().tag.getString("Owner");
 	}
 }
