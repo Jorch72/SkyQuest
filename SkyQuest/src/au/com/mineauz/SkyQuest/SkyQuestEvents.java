@@ -17,6 +17,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -95,5 +96,16 @@ public class SkyQuestEvents implements Listener{
     			}
     		}
     	}
+    }
+    @EventHandler
+    private void playerChat(AsyncPlayerChatEvent event){
+    	// Test the fuzzy string match
+    	String matchStr = "In the name of lord zarr, open this door!";
+    	if(Util.fuzzyStringMatch(matchStr, event.getMessage()))
+    	{
+    		event.getPlayer().sendMessage("Match Successful");
+    	}
+    	else
+    		event.getPlayer().sendMessage("Match Failed");
     }
 }

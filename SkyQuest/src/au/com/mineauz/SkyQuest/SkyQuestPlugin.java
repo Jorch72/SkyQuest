@@ -1,5 +1,7 @@
 package au.com.mineauz.SkyQuest;
 
+import java.util.logging.Level;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,6 +22,8 @@ public class SkyQuestPlugin extends JavaPlugin
 	{
 		getServer().getPluginManager().registerEvents(new SkyQuestEvents(), this);
 		getLogger().info(getDescription().getVersion() + " successfully enabled!");
+		getLogger().getParent().getHandlers()[0].setLevel(Level.FINE);
+		getLogger().setLevel(Level.FINE);
 	}
 	
 	@Override
