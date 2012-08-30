@@ -5,9 +5,11 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -19,6 +21,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -27,7 +30,7 @@ import au.com.mineauz.SkyQuest.pedestals.Pedestals;
 
 public class SkyQuestEvents implements Listener{
 	
-	private Map<Player, ItemStack> droppedBook = new HashMap<Player, ItemStack>(); //TODO: Probably move this to a Data class.
+	private Map<OfflinePlayer, ItemStack> droppedBook = new HashMap<OfflinePlayer, ItemStack>(); //TODO: Probably move this to a Data class.
     
     @EventHandler
 	private void onRightClickGround(PlayerInteractEvent event)
@@ -69,31 +72,41 @@ public class SkyQuestEvents implements Listener{
     		event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "This book is bound to you by magic!");
     	}
     }
-    
+    @EventHandler
+    private void playerLogin(PlayerJoinEvent event)
+    {
+    	if(droppedBook.containsKey(event.getPlayer())){
+    		//If the player had died with a magic book, give it back to them.
+    		// TODO: Make sure they have room for the book
+    		event.getPlayer().getInventory().addItem(droppedBook.get(event.getPlayer()));
+    		event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "Your magic book was dropped and found its way back to you!");
+    		droppedBook.remove(event.getPlayer());
+    	}
+    }
     @EventHandler
     private void magicBookForcedDropped(ItemSpawnEvent event){
     	if(event.getEntityType() == EntityType.DROPPED_ITEM){
     		Item item = (Item) event.getEntity();
     		if(item != null && MagicBook.isMagicBook(item.getItemStack())){
     			MagicBook mb = new MagicBook(item.getItemStack());
-    			String owner = mb.getHandle().tag.getString("Owner");
-    			if(Bukkit.getServer().getPlayer(owner) != null){
+    			String owner = mb.getOwner();
+    			
+    			if(Bukkit.getServer().getPlayerExact(owner) != null){
     				Player ply = Bukkit.getServer().getPlayer(owner);
+    				// TODO: Make sure they have room for the book
     				ply.getInventory().addItem(mb);
     				ply.sendMessage(ChatColor.LIGHT_PURPLE + "Your magic book was dropped and found its way back to you!");
-    				event.setCancelled(true);
     			}
     			else{
-    				Location loc = event.getLocation();
-    				loc.getBlock().setType(Material.CHEST);
-    				if(loc.getBlock().getState() instanceof Chest){
-	    				Chest chest = (Chest) loc.getBlock().getState();
-	    				chest.getInventory().addItem(item.getItemStack());
-	    				event.setCancelled(true);
-	    				// Its being called but items aren't being put into the chest >:(
-	    				// Help me out here!
-    				}
+    				// Give it back to them on login
+    				if(Bukkit.getOfflinePlayer(owner) != null)
+    					droppedBook.put(Bukkit.getOfflinePlayer(owner), mb);
     			}
+    			
+    			// Play a totally awesome effect
+    			item.getLocation().getWorld().playEffect(item.getLocation(), Effect.ENDER_SIGNAL, 0);
+				item.getLocation().getWorld().playSound(item.getLocation(), Sound.ENDERMAN_TELEPORT, 1, 1);
+				item.remove();
     		}
     	}
     }
