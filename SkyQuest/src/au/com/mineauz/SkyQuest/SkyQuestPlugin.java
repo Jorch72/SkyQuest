@@ -5,16 +5,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
 
-import au.com.mineauz.SkyQuest.pedestals.*;
-
-public class SkyQuestPlugin extends JavaPlugin implements Listener
+public class SkyQuestPlugin extends JavaPlugin
 {
     public static SkyQuestPlugin instance;
 	
@@ -26,7 +18,7 @@ public class SkyQuestPlugin extends JavaPlugin implements Listener
 	@Override
 	public void onEnable()
 	{
-		getServer().getPluginManager().registerEvents(this, this);
+		getServer().getPluginManager().registerEvents(new SkyQuestEvents(), this);
 		getLogger().info(getDescription().getVersion() + " successfully enabled!");
 	}
 	
@@ -65,16 +57,5 @@ public class SkyQuestPlugin extends JavaPlugin implements Listener
 		}
 		
 		return false;
-	}
-    
-    @EventHandler
-	private void onRightClickGround(PlayerInteractEvent event)
-	{
-		// Test of pedestal creation
-		if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasBlock() && (event.hasItem() && event.getItem().getType() == Material.BOOK))
-		{
-			Location loc = event.getClickedBlock().getRelative(event.getBlockFace(), 1).getLocation();
-			Pedestals.addPedestal(new DebugPedestal(loc));
-		}
 	}
 }
