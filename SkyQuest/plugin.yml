@@ -18,10 +18,14 @@ permissions:
     children:
       skyquest.skyquest: true
       skyquest.help: true
+      skyquest.savepoint: true
       
   skyquest.skyquest:
     description: Access to the skyquest command.
     default: op
   skyquest.help:
     description: Allows a player to access the help command.
+    default: op
+  skyquest.savepoint:
+    description: Allows a player to use the savepoint command.
     default: op

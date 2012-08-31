@@ -112,11 +112,22 @@ public class SkyQuestEvents implements Listener{
     }
     @EventHandler
     private void playerChat(AsyncPlayerChatEvent event){
-    	// Test the fuzzy string match
-    	String matchStr = "In the name of lord zarr, open this door!";
+    	// Test the fuzzy string match with save point
+    	String matchStr = "Vade ad Salvare";
     	if(Util.fuzzyStringMatch(matchStr, event.getMessage()))
     	{
     		event.getPlayer().sendMessage("Match Successful");
+    		for(ItemStack item : event.getPlayer().getInventory().getContents()){
+    			if(item.getType() == Material.WRITTEN_BOOK && MagicBook.isMagicBook(item)){
+    				MagicBook mb = new MagicBook(item);
+    				if(mb.getHandle().tag.getBoolean("Saved")){
+    					event.getPlayer().teleport(Util.stringToLocation(mb.getHandle().tag.getString("SavePoint")));
+    					event.setMessage(ChatColor.MAGIC + event.getMessage());
+    					//TODO: This needs to be done correctly in spellbase?
+    				}
+    				break;
+    			}
+    		}
     	}
     	else
     		event.getPlayer().sendMessage("Match Failed");

@@ -2,6 +2,10 @@ package au.com.mineauz.SkyQuest;
 
 import java.util.Arrays;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+
 public class Util 
 {
 	/**
@@ -66,5 +70,36 @@ public class Util
 		
 		// The bottom right corner now holds the distance
 		return matrix[lenS + lenT * width];
+	}
+	
+	/**
+	 * Converts a location into a string for data storage.
+	 * @param loc - The location that needs to be converted
+	 * @return A string form of the location
+	 */
+	public static String locationToString(Location loc){
+		return loc.getWorld().getName() + "&" + loc.getX() + "&" + loc.getY() + "&" + loc.getZ() + "&" + loc.getYaw() + "&" + loc.getPitch();
+	}
+	
+	/**
+	 * Converts a location string back into a location object
+	 * @param str - The string that needs to be converted back
+	 * @return The Location
+	 */
+	public static Location stringToLocation(String str){
+		if(str.contains("&")){
+			String[] strarray = str.split("&");
+			if(strarray.length == 6){
+				World world = Bukkit.getWorld(strarray[0]);
+				double x = Double.parseDouble(strarray[1]);
+				double y = Double.parseDouble(strarray[2]);
+				double z = Double.parseDouble(strarray[3]);
+				float yaw = Float.parseFloat(strarray[4]);
+				float pitch = Float.parseFloat(strarray[5]);
+				
+				return new Location(world, x, y, z, yaw, pitch);
+			}
+		}
+		return null;
 	}
 }
