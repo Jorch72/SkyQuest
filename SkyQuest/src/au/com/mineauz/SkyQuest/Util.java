@@ -5,6 +5,10 @@ import java.util.Arrays;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import net.minecraft.server.NBTTagCompound;
+
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
 
 public class Util 
 {
@@ -101,5 +105,34 @@ public class Util
 			}
 		}
 		return null;
+	}
+	public static void writeItemStackToNBT(ItemStack item, NBTTagCompound root)
+	{
+		root.setInt("ID", item.getTypeId());
+		root.setShort("Dmg", item.getDurability());
+		root.setInt("Count", item.getAmount());
+		
+		if(item instanceof CraftItemStack)
+		{
+			if(((CraftItemStack)item).getHandle().tag != null)
+				root.set("tag", ((CraftItemStack)item).getHandle().tag);
+		}
+		else if(!item.getEnchantments().isEmpty())
+		{
+			CraftItemStack temp = new CraftItemStack(item);
+			root.set("tag", ((CraftItemStack)temp).getHandle().tag);
+		}
+	}
+	
+	public static ItemStack readItemStackFromNBT(NBTTagCompound root)
+	{
+		CraftItemStack item = new CraftItemStack(root.getInt("ID"));
+		item.setDurability(root.getShort("Dmg"));
+		item.setAmount(root.getInt("Count"));
+		
+		if(root.hasKey("tag"))
+			item.getHandle().tag = (NBTTagCompound)root.get("tag");
+		
+		return item;
 	}
 }

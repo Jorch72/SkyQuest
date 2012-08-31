@@ -2,6 +2,9 @@ package au.com.mineauz.SkyQuest.pedestals;
 
 import java.util.Collection;
 
+import net.minecraft.server.NBTTagCompound;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -21,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import au.com.mineauz.SkyQuest.SkyQuestPlugin;
+import au.com.mineauz.SkyQuest.Util;
 
 /**
  * A base class for all pedestals
@@ -48,7 +52,7 @@ public abstract class PedestalBase
 		{
 			if(item.getItemStack().equals(hoverItem) && item.getLocation().distanceSquared(loc) < 1D)
 			{
-				// Reattack the item
+				// Reattach the item
 				mHoveringItem = item;
 				break;
 			}
@@ -64,7 +68,13 @@ public abstract class PedestalBase
 		mEventListener = new PedestalListener();
 		SkyQuestPlugin.instance.getServer().getPluginManager().registerEvents(mEventListener, SkyQuestPlugin.instance);
 	}
-
+	/**
+	 * Used for loading a pedestal from file. Do not use normally
+	 */
+	protected PedestalBase()
+	{
+		
+	}
 			
 	/**
 	 * Called when a player right clicks on the pedestal 
@@ -83,6 +93,55 @@ public abstract class PedestalBase
 	public Location getLocation()
 	{
 		return mLocation;
+	}
+	
+	/**
+	 * Called when saving data. 
+	 * If overriding, remember to call this version
+	 */
+	public void writeToNBT(NBTTagCompound root)
+	{
+		root.setString("World", mLocation.getWorld().getName());
+		root.setDouble("X", mLocation.getX());
+		root.setDouble("Y", mLocation.getY());
+		root.setDouble("Z", mLocation.getZ());
+		
+		Util.writeItemStackToNBT(mHoverItemTemplate, root);
+	}
+	
+	/**
+	 * Called when loading data. 
+	 * If overriding, remember to call this version
+	 */
+	public void readFromNBT(NBTTagCompound root)
+	{
+		mLocation = new Location(Bukkit.getWorld(root.getString("World")), root.getDouble("X"), root.getDouble("Y"), root.getDouble("Z"));
+		
+		mHoverItemTemplate = Util.readItemStackFromNBT(root);
+		
+		// Check for existing item
+		Collection<Item> items = mLocation.getWorld().getEntitiesByClass(Item.class);
+		Location loc = mLocation.clone().add(0, 1, 0);
+		
+		for(Item item : items)
+		{
+			if(item.getItemStack().equals(mHoverItemTemplate) && item.getLocation().distanceSquared(loc) < 1D)
+			{
+				// Reattach the item
+				mHoveringItem = item;
+				break;
+			}
+		}
+		// Spawn a new item if needed
+		if(mHoveringItem == null)
+		{
+			mHoveringItem = mLocation.getWorld().dropItem(mLocation.clone().add(0.5, 1, 0.5), mHoverItemTemplate);
+			mHoveringItem.setVelocity(new Vector(0,0,0));
+		}
+		
+		// Register the event listener
+		mEventListener = new PedestalListener();
+		SkyQuestPlugin.instance.getServer().getPluginManager().registerEvents(mEventListener, SkyQuestPlugin.instance);
 	}
 	
 	/**

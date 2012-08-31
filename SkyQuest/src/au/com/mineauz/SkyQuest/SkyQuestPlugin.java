@@ -1,6 +1,10 @@
 package au.com.mineauz.SkyQuest;
 
+import java.io.*;
 import java.util.logging.Level;
+
+import net.minecraft.server.NBTBase;
+import net.minecraft.server.NBTTagCompound;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -25,6 +29,7 @@ public class SkyQuestPlugin extends JavaPlugin
 	@Override
 	public void onEnable()
 	{
+		loadData();
 		getServer().getPluginManager().registerEvents(new SkyQuestEvents(), this);
 		getLogger().info(getDescription().getVersion() + " successfully enabled!");
 		getLogger().getParent().getHandlers()[0].setLevel(Level.FINE);
@@ -34,7 +39,7 @@ public class SkyQuestPlugin extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		
+		saveData();
 		getLogger().info("successfully disabled!");
 	}
 	
@@ -92,5 +97,60 @@ public class SkyQuestPlugin extends JavaPlugin
 		}
 		
 		return false;
+	}
+	
+	public boolean saveData()
+	{
+		File dataFile = new File(getDataFolder(), "skyquest.dat");
+		try
+		{
+			// Build the file path if needed
+			dataFile.getParentFile().mkdirs();
+			
+			FileOutputStream stream = new FileOutputStream(dataFile);
+			DataOutputStream dstream = new DataOutputStream(stream);
+			
+			NBTTagCompound root = new NBTTagCompound();
+			Pedestals.savePedestals(root);
+			// TODO: Any other save functions here
+
+			NBTBase.a(root, dstream);
+			
+			dstream.close();
+		}
+		catch(IOException e)
+		{
+			getLogger().severe(e.getMessage());
+			return false;
+		}
+
+		return true;
+	}
+	
+	public boolean loadData()
+	{
+		File dataFile = new File(getDataFolder(), "skyquest.dat");
+		// Nothing to load if it doesnt exist
+		if(!dataFile.exists())
+			return true;
+		try
+		{
+			FileInputStream stream = new FileInputStream(dataFile);
+			DataInputStream dstream = new DataInputStream(stream);
+			
+			NBTTagCompound root = (NBTTagCompound)NBTBase.b(dstream);
+			
+			Pedestals.loadPedestals(root);
+			// TODO: Any other load functions here
+			
+			dstream.close();
+		}
+		catch(IOException e)
+		{
+			getLogger().severe(e.getMessage());
+			return false;
+		}
+		
+		return true;
 	}
 }

@@ -16,6 +16,13 @@ public class DebugPedestal extends PedestalBase
 	{
 		super(new ItemStack(Material.SMOOTH_BRICK,1,(short)3), new ItemStack(Material.WRITTEN_BOOK), pedestalLocation);
 	}
+	/**
+	 * Used for loading a pedestal from file. Do not use normally
+	 */
+	public DebugPedestal()
+	{
+		super();
+	}
 
 	@SuppressWarnings("deprecation")
 	@Override

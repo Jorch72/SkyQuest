@@ -16,6 +16,9 @@ public class SavePedestal extends PedestalBase{
 	public SavePedestal(Location pedestalLocation){
 		super(new ItemStack(Material.SANDSTONE,1,(short)3), new ItemStack(Material.BOOK_AND_QUILL), pedestalLocation);
 	}
+	public SavePedestal(){
+		super();
+	}
 
 	@SuppressWarnings("deprecation")
 	@Override
