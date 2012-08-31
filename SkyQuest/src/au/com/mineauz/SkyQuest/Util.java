@@ -1,13 +1,17 @@
 package au.com.mineauz.SkyQuest;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import net.minecraft.server.NBTTagCompound;
 
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class Util 
@@ -26,10 +30,13 @@ public class Util
 		string1 = string1.toLowerCase();
 		string2 = string2.toLowerCase();
 		
+		// Allow 1 error per 10 chars
+		int maxError = (int)Math.ceil((string1.length() + string2.length()) / 20D);
+		
 		// Compute the edit distance of the 2 strings
 		int editdistance = levenshteinDistance(string1, string2);
 		
-		if(editdistance <= 3)
+		if(editdistance <= maxError)
 		{
 			SkyQuestPlugin.instance.getLogger().fine("Fuzzy Match: '" + string1 + "' == '" + string2 + "' { dist: " + editdistance + " }");
 			return true;
@@ -134,5 +141,27 @@ public class Util
 			item.getHandle().tag = (NBTTagCompound)root.get("tag");
 		
 		return item;
+	}
+	
+	/**
+	 * Gets a players magic book if they are carrying it
+	 */
+	public static MagicBook getMagicBookFor(Player player)
+	{
+		HashMap<Integer, ? extends ItemStack> books = player.getInventory().all(Material.WRITTEN_BOOK);
+		for(Entry<Integer, ? extends ItemStack> ent : books.entrySet())
+		{
+			if(MagicBook.isMagicBook(ent.getValue()))
+			{
+				// Make sure it is theirs
+				MagicBook mb = new MagicBook(ent.getValue());
+				if(mb.getOwner().equalsIgnoreCase(player.getName()))
+				{
+					return mb; 
+				}
+			}
+		}
+		
+		return null;
 	}
 }

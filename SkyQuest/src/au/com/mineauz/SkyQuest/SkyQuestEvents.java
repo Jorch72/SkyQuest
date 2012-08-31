@@ -1,6 +1,7 @@
 package au.com.mineauz.SkyQuest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -27,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.SkyQuest.pedestals.DebugPedestal;
 import au.com.mineauz.SkyQuest.pedestals.Pedestals;
+import au.com.mineauz.SkyQuest.spells.SpellBase;
 
 public class SkyQuestEvents implements Listener{
 	
@@ -111,25 +113,23 @@ public class SkyQuestEvents implements Listener{
     	}
     }
     @EventHandler
-    private void playerChat(AsyncPlayerChatEvent event){
-    	// Test the fuzzy string match with save point
-    	String matchStr = "Vade ad Salvare";
-    	if(Util.fuzzyStringMatch(matchStr, event.getMessage()))
+    private void playerChat(AsyncPlayerChatEvent event)
+    {
+    	MagicBook book = Util.getMagicBookFor(event.getPlayer());
+    	
+    	if(book == null)
+    		return;
+    	
+    	List<SpellBase> knownSpells = book.getLearnedSpells();
+    	
+    	for(SpellBase spell : knownSpells)
     	{
-    		event.getPlayer().sendMessage("Match Successful");
-    		for(ItemStack item : event.getPlayer().getInventory().getContents()){
-    			if(item.getType() == Material.WRITTEN_BOOK && MagicBook.isMagicBook(item)){
-    				MagicBook mb = new MagicBook(item);
-    				if(mb.getHandle().tag.getBoolean("Saved")){
-    					event.getPlayer().teleport(Util.stringToLocation(mb.getHandle().tag.getString("SavePoint")));
-    					event.setMessage(ChatColor.MAGIC + event.getMessage());
-    					//TODO: This needs to be done correctly in spellbase?
-    				}
-    				break;
-    			}
+    		if(spell.canCastSpell(event.getPlayer()) && Util.fuzzyStringMatch(spell.getIncantation(), event.getMessage()))
+    		{
+    			spell.onActivate(book, event.getPlayer());
+    			event.setMessage(ChatColor.MAGIC + event.getMessage());
+    			break;
     		}
     	}
-    	else
-    		event.getPlayer().sendMessage("Match Failed");
     }
 }

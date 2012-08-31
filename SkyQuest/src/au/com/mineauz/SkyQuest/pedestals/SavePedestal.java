@@ -11,6 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.SkyQuest.MagicBook;
 import au.com.mineauz.SkyQuest.Util;
+import au.com.mineauz.SkyQuest.spells.SavePointSpell;
 
 public class SavePedestal extends PedestalBase{
 	public SavePedestal(Location pedestalLocation){
@@ -25,39 +26,32 @@ public class SavePedestal extends PedestalBase{
 	protected void onPlayerActivatePedestal(Player player) {
 		HashMap<Integer, ? extends ItemStack> books = player.getInventory().all(Material.WRITTEN_BOOK);
 		
-		if(!books.isEmpty())
+		boolean found = false;
+		// Find the magic book
+		for(Entry<Integer, ? extends ItemStack> ent : books.entrySet())
 		{
-			boolean found = false;
-			// Find the magic book
-			for(Entry<Integer, ? extends ItemStack> ent : books.entrySet())
+			if(MagicBook.isMagicBook(ent.getValue()))
 			{
-				if(MagicBook.isMagicBook(ent.getValue()))
+				MagicBook book = new MagicBook(ent.getValue());
+				SavePointSpell spell = new SavePointSpell();
+				if(!book.hasLearnedSpell(spell))
 				{
-					MagicBook book = new MagicBook(ent.getValue());
-					if(!book.getHandle().tag.getBoolean("Saved")){
-						book.addPage("You have uncovered the " + ChatColor.LIGHT_PURPLE + "Spell of Saviours!\n" + ChatColor.BLACK +
-							"Say the following chant to be returned to this point at the cost of <XP amount> XP:\n" +
-							ChatColor.LIGHT_PURPLE + "Vade ad Salvare");
-						player.sendMessage("Unlocked " + ChatColor.LIGHT_PURPLE + "Spell of Saviours!");
-						book.getHandle().tag.setBoolean("Saved", true);
-					}
-					
+					book.learnSpell(spell, false);
+				}
+				else
+				{
 					book.getHandle().tag.setString("SavePoint", Util.locationToString(player.getLocation()));
 					player.sendMessage("Saved your current location");
-					
-					player.getInventory().setItem(ent.getKey(), book);
-					player.updateInventory();
-					found = true;
-					break;
 				}
-			}
-			
-			if(!found)
-			{
-				player.sendMessage(ChatColor.LIGHT_PURPLE + "You do not have a magic book to save your location!");
+				player.getInventory().setItem(ent.getKey(), book);
+				player.updateInventory();
+				found = true;
+				break;
 			}
 		}
-		else{
+		
+		if(!found)
+		{
 			player.sendMessage(ChatColor.LIGHT_PURPLE + "You do not have a magic book to save your location!");
 		}
 	}

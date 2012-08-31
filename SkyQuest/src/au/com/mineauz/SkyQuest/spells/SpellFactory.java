@@ -2,6 +2,8 @@ package au.com.mineauz.SkyQuest.spells;
 
 import java.util.HashMap;
 
+import au.com.mineauz.SkyQuest.SkyQuestPlugin;
+
 /**
  * A factory for creating spell instances by type name.
  * Spells should be statically registered with this factory using registerSpellName()
@@ -17,7 +19,12 @@ public class SpellFactory
 	public static SpellBase getSpell(String name)
 	{
 		if(!sRegisteredSpells.containsKey(name.toLowerCase()))
+		{
+			SkyQuestPlugin.instance.getLogger().warning("Invalid spell type: " + name);
 			return null;
+		}
+			
+			
 		
 		try 
 		{
@@ -25,8 +32,17 @@ public class SpellFactory
 		} 
 		catch (InstantiationException | IllegalAccessException e) 
 		{
+			SkyQuestPlugin.instance.getLogger().warning("Invalid spell type: " + name);
 			return null;
 		}
+	}
+	
+	/**
+	 * Gets the type name of a registered spell
+	 */
+	public static String getSpellType(Class<? extends SpellBase> classType)
+	{
+		return sRegisteredSpellsReverse.get(classType);
 	}
 	
 	/**
@@ -41,9 +57,16 @@ public class SpellFactory
 			return false;
 		
 		sRegisteredSpells.put(name.toLowerCase(), classType);
+		sRegisteredSpellsReverse.put(classType, name.toLowerCase());
 		
 		return true;
 	}
 	
 	private static HashMap<String, Class<? extends SpellBase>> sRegisteredSpells = new HashMap<>();
+	private static HashMap<Class<? extends SpellBase>, String> sRegisteredSpellsReverse = new HashMap<>();
+	
+	static
+	{
+		registerSpellName("save", SavePointSpell.class);
+	}
 }
