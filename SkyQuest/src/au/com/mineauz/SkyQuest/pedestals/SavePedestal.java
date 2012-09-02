@@ -15,7 +15,7 @@ import au.com.mineauz.SkyQuest.spells.SavePointSpell;
 
 public class SavePedestal extends PedestalBase{
 	public SavePedestal(Location pedestalLocation){
-		super(new ItemStack(Material.SANDSTONE,1,(short)3), new ItemStack(Material.BOOK_AND_QUILL), pedestalLocation);
+		super(new ItemStack(Material.SANDSTONE,1,(short)2), new ItemStack(Material.BOOK_AND_QUILL), pedestalLocation);
 	}
 	public SavePedestal(){
 		super();
