@@ -68,5 +68,6 @@ public class SpellFactory
 	static
 	{
 		registerSpellName("save", SavePointSpell.class);
+		registerSpellName("warp", WarpSpell.class);
 	}
 }
