@@ -1,6 +1,8 @@
 package au.com.mineauz.SkyQuest.spells;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import au.com.mineauz.SkyQuest.MagicBook;
@@ -15,7 +17,11 @@ public class SavePointSpell extends SpellBase
 	@Override
 	public boolean onActivate(MagicBook book, Player forPlayer) 
 	{
+		forPlayer.getWorld().playEffect(forPlayer.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
+		forPlayer.getWorld().playSound(forPlayer.getLocation(), Sound.FIRE_IGNITE, 10, 1);
 		forPlayer.teleport(Util.stringToLocation(book.getHandle().tag.getString("SavePoint")));
+		forPlayer.getWorld().playEffect(forPlayer.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
+		forPlayer.getWorld().playSound(forPlayer.getLocation(), Sound.FIRE_IGNITE, 10, 1);
 		return true;
 	}
 	
@@ -50,9 +56,5 @@ public class SavePointSpell extends SpellBase
 		return "Say the following chant to be returned to this point at the cost of " + getExpCost() + " XP:\n" +
 				ChatColor.LIGHT_PURPLE + getIncantation();
 	}
-	
-	
-
-	
 	
 }

@@ -1,7 +1,9 @@
 package au.com.mineauz.SkyQuest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -113,6 +115,27 @@ public class Util
 		}
 		return null;
 	}
+	
+	public static String listToString(List<String> list){
+		String str = "";
+		for(String s : list){
+			str += s + "|";
+		}
+		return str;
+	}
+	
+	public static List<String> stringToList(String str){
+		if(str.contains("|")){
+			String[] stra = str.split("\\|");
+			List<String> ret = new ArrayList<String>();
+			for(String s : stra){
+				ret.add(s);
+			}
+			return ret;
+		}
+		return null;
+	}
+	
 	public static void writeItemStackToNBT(ItemStack item, NBTTagCompound root)
 	{
 		root.setInt("ID", item.getTypeId());

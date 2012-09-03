@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.SkyQuest.MagicBook;
+import au.com.mineauz.SkyQuest.spells.WarpSpell;
 
 public class DebugPedestal extends PedestalBase
 {
@@ -46,7 +47,12 @@ public class DebugPedestal extends PedestalBase
 				if(MagicBook.isMagicBook(ent.getValue()))
 				{
 					MagicBook book = new MagicBook(ent.getValue());
-					book.addTestPage();
+					//book.addTestPage();
+					WarpSpell spell = new WarpSpell("Test");
+					if(!book.hasLearnedSpell(spell))
+					{
+						book.learnSpell(spell, false);
+					}
 					
 					player.getInventory().setItem(ent.getKey(), book);
 					player.updateInventory();
