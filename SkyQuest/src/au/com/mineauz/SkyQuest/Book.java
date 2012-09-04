@@ -25,8 +25,8 @@ public class Book extends CraftItemStack
 	{
 		super(item);
 		
-		if(item.getType() != Material.WRITTEN_BOOK)
-			throw new IllegalArgumentException("item must be of type WRITTEN_BOOK");
+		if(item.getType() != Material.WRITTEN_BOOK && item.getType() != Material.BOOK_AND_QUILL)
+			throw new IllegalArgumentException("item must be of type WRITTEN_BOOK or BOOK_AND_QUILL");
 		
 		if(item instanceof CraftItemStack)
 			getHandle().tag = ((CraftItemStack)item).getHandle().tag;

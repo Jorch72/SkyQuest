@@ -50,16 +50,18 @@ public abstract class PedestalBase
 		
 		for(Item item : items)
 		{
-			if(item.getItemStack().equals(hoverItem) && item.getLocation().distanceSquared(loc) < 1D)
+			if(item.getItemStack().equals(hoverItem) && item.getLocation().distanceSquared(loc) < 1D && !item.isDead())
 			{
 				// Reattach the item
 				mHoveringItem = item;
+				SkyQuestPlugin.instance.getLogger().fine("Attaching old item");
 				break;
 			}
 		}
 		// Spawn a new item if needed
 		if(mHoveringItem == null)
 		{
+			SkyQuestPlugin.instance.getLogger().fine("Spawning new item");
 			mHoveringItem = mLocation.getWorld().dropItem(mLocation.clone().add(0.5, 1, 0.5), mHoverItemTemplate);
 			mHoveringItem.setVelocity(new Vector(0,0,0));
 		}
@@ -96,6 +98,18 @@ public abstract class PedestalBase
 	}
 	
 	/**
+	 * Called if the chunk is unloaded, the plugin is unloaded, etc.
+	 */
+	public void onRemove()
+	{
+		if(mHoveringItem != null)
+		{
+			mHoveringItem.remove();
+			mHoveringItem = null;
+		}
+	}
+	
+	/**
 	 * Called when saving data. 
 	 * If overriding, remember to call this version
 	 */
@@ -125,8 +139,9 @@ public abstract class PedestalBase
 		
 		for(Item item : items)
 		{
-			if(item.getItemStack().equals(mHoverItemTemplate) && item.getLocation().distanceSquared(loc) < 1D)
+			if(item.getItemStack().equals(mHoverItemTemplate) && item.getLocation().distanceSquared(loc) < 1D && !item.isDead())
 			{
+				SkyQuestPlugin.instance.getLogger().fine("Attaching old item");
 				// Reattach the item
 				mHoveringItem = item;
 				break;
@@ -135,6 +150,7 @@ public abstract class PedestalBase
 		// Spawn a new item if needed
 		if(mHoveringItem == null)
 		{
+			SkyQuestPlugin.instance.getLogger().fine("Spawning new item");
 			mHoveringItem = mLocation.getWorld().dropItem(mLocation.clone().add(0.5, 1, 0.5), mHoverItemTemplate);
 			mHoveringItem.setVelocity(new Vector(0,0,0));
 		}
@@ -175,11 +191,9 @@ public abstract class PedestalBase
 		@EventHandler
 		private void onChunkUnload(ChunkUnloadEvent event)
 		{
-			if(event.getChunk() == mLocation.getChunk() && mHoveringItem != null)
+			if(event.getChunk() == mLocation.getChunk())
 			{
-				mHoveringItem.remove();
-				mHoveringItem = null;
-				SkyQuestPlugin.instance.getLogger().info("Chunk unloaded");
+				onRemove();
 			}
 		}
 		/**
@@ -190,9 +204,7 @@ public abstract class PedestalBase
 		{
 			if(event.getChunk() == mLocation.getChunk())
 			{
-				if(mHoveringItem != null)
-					mHoveringItem.remove();
-				SkyQuestPlugin.instance.getLogger().info("Chunk loaded");
+				onRemove();
 				mHoveringItem = mLocation.getWorld().dropItem(mLocation.clone().add(0.5, 1, 0.5), mHoverItemTemplate);
 				mHoveringItem.setVelocity(new Vector(0,0,0));
 			}
@@ -203,10 +215,9 @@ public abstract class PedestalBase
 		@EventHandler
 		private void onWorldUnload(WorldUnloadEvent event)
 		{
-			if(event.getWorld() == mLocation.getWorld() && mHoveringItem != null)
+			if(event.getWorld() == mLocation.getWorld())
 			{
-				mHoveringItem.remove();
-				mHoveringItem = null;
+				onRemove();
 			}
 		}
 		/**
@@ -217,8 +228,7 @@ public abstract class PedestalBase
 		{
 			if(event.getWorld() == mLocation.getWorld() && mLocation.getChunk().isLoaded())
 			{
-				if(mHoveringItem != null)
-					mHoveringItem.remove();
+				onRemove();
 
 				mHoveringItem = mLocation.getWorld().dropItem(mLocation.clone().add(0.5, 1, 0.5), mHoverItemTemplate);
 				mHoveringItem.setVelocity(new Vector(0,0,0));
@@ -232,10 +242,7 @@ public abstract class PedestalBase
 			{
 				if(event.getBlock().getLocation().distanceSquared(mLocation) < 1D)
 				{
-					if(mHoveringItem != null)
-						mHoveringItem.remove();
-					
-					mHoveringItem = null;
+					onRemove();
 					
 					onPedestalDestroyed();
 				}

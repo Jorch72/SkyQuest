@@ -22,6 +22,7 @@ public class Pedestals
 		// Register this type with the pedestal manager
 		registerPedestalType("Debug", DebugPedestal.class);
 		registerPedestalType("Save", SavePedestal.class);
+		registerPedestalType("Quest", QuestPedestal.class);
 	}
 	/**
 	 * Registers a pedestal type
@@ -73,6 +74,11 @@ public class Pedestals
 	{
 		NBTTagList list = root.getList("Pedestals");
 		
+		unloadPedestals();
+		
+		if(list == null)
+			return;
+		
 		for(int i = 0; i < list.size(); ++i)
 		{
 			NBTTagCompound tag = (NBTTagCompound)list.get(i);
@@ -89,6 +95,16 @@ public class Pedestals
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public static void unloadPedestals()
+	{
+		// Unload all current pedestals
+		for(Entry<Location, PedestalBase> ent : mPedestals.entrySet())
+		{
+			ent.getValue().onRemove();
+		}
+		mPedestals.clear();
 	}
 
 	private static HashMap<Location, PedestalBase> mPedestals = new HashMap<Location, PedestalBase>();

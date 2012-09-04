@@ -29,3 +29,6 @@ permissions:
   skyquest.savepoint:
     description: Allows a player to use the savepoint command.
     default: op
+  skyquest.quest.edit:
+    description: Allows a player to edit existing quests, create new quests, and remove quests
+    default: op

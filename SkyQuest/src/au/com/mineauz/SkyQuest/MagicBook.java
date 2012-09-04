@@ -13,6 +13,8 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import au.com.mineauz.SkyQuest.quests.Quest;
+import au.com.mineauz.SkyQuest.quests.QuestFactory;
 import au.com.mineauz.SkyQuest.spells.SpellBase;
 import au.com.mineauz.SkyQuest.spells.SpellFactory;
 
@@ -34,11 +36,6 @@ public class MagicBook extends Book
 		getHandle().tag.setBoolean("MagicBook", true);
 		
 		
-	}
-	
-	public void addTestPage()
-	{
-		addPage("Test page");
 	}
 	
 	public static boolean isMagicBook(ItemStack stack)
@@ -140,4 +137,48 @@ public class MagicBook extends Book
 		
 		return spells;
 	}
+	
+	public void markQuestComplete(Quest quest)
+	{
+		NBTTagList quests = getHandle().tag.getList("Quests");
+		
+		if(quests == null)
+			quests = new NBTTagList();
+		
+		quests.add(new NBTTagString(quest.QuestID,quest.QuestID));
+		
+		getHandle().tag.set("Quests", quests);
+	}
+	public boolean hasCompletedQuest(Quest quest)
+	{
+		NBTTagList quests = getHandle().tag.getList("Quests");
+		
+		if(quests == null)
+			return false;
+		
+		for(int i = 0; i < quests.size(); i++)
+		{
+			if(((NBTTagString)quests.get(i)).data.equalsIgnoreCase(quest.QuestID))
+				return true;
+		}
+		
+		return false;
+	}
+	public List<Quest> getCompletedQuests()
+	{
+		NBTTagList quests = getHandle().tag.getList("Quests");
+		
+		if(quests == null)
+			return new ArrayList<Quest>();
+		
+		ArrayList<Quest> list = new ArrayList<Quest>();
+		
+		for(int i = 0; i < quests.size(); i++)
+		{
+			list.add(QuestFactory.getQuest(((NBTTagString)quests.get(i)).data));
+		}
+		
+		return list;
+	}
+			
 }
