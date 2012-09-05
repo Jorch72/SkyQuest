@@ -13,13 +13,28 @@ public class Quest
 	private int mExpGain;
 	
 	public String QuestID;
-
+	
+	/**
+	 * Create a quest from a template boook
+	 * @param templateBook - The template book
+	 * @throws IllegalArgumentException If template book data is incorrect
+	 */
 	public Quest(Book templateBook)
 	{
-		updateFromTemplate(templateBook);
+		try{
+			updateFromTemplate(templateBook);
+		}
+		catch(IllegalArgumentException e){
+			throw new IllegalArgumentException(e.getCause());
+		}
 	}
 	public Quest() {}
 	
+	/**
+	 * Updates a quest from a template book
+	 * @param templateBook - The template book
+	 * @throws IllegalArgumentException If template book data is incorrect
+	 */
 	public void updateFromTemplate(Book templateBook)
 	{
 		String[] pages = templateBook.getPages();

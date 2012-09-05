@@ -252,7 +252,7 @@ public abstract class PedestalBase
 		@EventHandler
 		private void onPlayerInteract(PlayerInteractEvent event)
 		{
-			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasBlock() && event.getClickedBlock().getLocation().distanceSquared(mLocation) < 1D)
+			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasBlock()/* && event.getClickedBlock().getLocation().distanceSquared(mLocation) < 1D*/) //What was the point of that check?
 			{
 				onPlayerActivatePedestal(event.getPlayer());
 			}

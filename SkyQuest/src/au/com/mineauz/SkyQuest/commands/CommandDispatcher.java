@@ -26,7 +26,8 @@ public class CommandDispatcher implements CommandExecutor
 	{
 		mCommands = new HashMap<String, ICommand>();
 		registerCommand(new HelpCommand());
-		registerCommand(new SavePointCommand());
+		//registerCommand(new SavePointCommand()); Deprecated, remove class later!
+		registerCommand(new NewPedestalCommand());
 		registerCommand(new NewQuestCommand());
 		registerCommand(new EditQuestCommand());
 		registerCommand(new UpdateQuestCommand());

@@ -7,45 +7,40 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import au.com.mineauz.SkyQuest.SkyQuestPlugin;
+import au.com.mineauz.SkyQuest.pedestals.BlankQuestPedestal;
 import au.com.mineauz.SkyQuest.pedestals.Pedestals;
 import au.com.mineauz.SkyQuest.pedestals.SavePedestal;
 
-@Deprecated
-public class SavePointCommand implements ICommand
-{
+public class NewPedestalCommand implements ICommand{
+
 	@Override
-	public String getName() 
-	{
-		return "savepoint";
+	public String getName() {
+		return "pedestal";
 	}
 
 	@Override
-	public String[] getAliases() 
-	{
-		return null;
+	public String[] getAliases() {
+		return new String[] { "ped" };
 	}
 
 	@Override
-	public String getPermission() 
-	{
-		return "skyquest.savepoint";
+	public String getPermission() {
+		return "skyquest.pedestal.create";
 	}
 
 	@Override
-	public String getUsageString(String label) 
-	{
-		return label;
+	public String getUsageString(String label) {
+		return "Creates a pedestal where you are looking";
 	}
 
 	@Override
-	public boolean canBeConsole() 
-	{
+	public boolean canBeConsole() {
 		return false;
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, String label, String[] args) 
-	{
+	public boolean onCommand(CommandSender sender, String label, String[] args) {
+		
 		Player player = (Player)sender;
 		
 		Location target = player.getTargetBlock(null, 25).getLocation();
@@ -53,15 +48,22 @@ public class SavePointCommand implements ICommand
 		if(target != null && target.getBlock().getType() != Material.AIR)
 		{
 			target.setY(target.getY() + 1);
-			Pedestals.addPedestal(new SavePedestal(target));
+			if(args[0].equalsIgnoreCase("savepoint")){
+				Pedestals.addPedestal(new SavePedestal(target));
+			}
+			else if(args[0].equalsIgnoreCase("questpoint")){
+				Pedestals.addPedestal(new BlankQuestPedestal(target));
+			}
+			else{
+				player.sendMessage(ChatColor.RED + "Invalid pedestal type!");
+			}
 			SkyQuestPlugin.instance.saveData();
 		}
 		else
 		{
 			player.sendMessage(ChatColor.RED + "No target block in range!");
 		}
-		
 		return true;
 	}
-	
+
 }

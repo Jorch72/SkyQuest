@@ -49,8 +49,8 @@ public class QuestPedestal extends PedestalBase
 	}
 
 	@Override
-	protected void onPedestalDestroyed() 
-	{
+	protected void onPedestalDestroyed() {
+		Pedestals.removePedestal(getLocation());
 	}
 
 	
