@@ -36,7 +36,7 @@ public class WarpSpell extends SpellBase{
 
 	@Override
 	public int getExpCost() {
-		return 0;
+		return 8;
 	}
 
 	@Override

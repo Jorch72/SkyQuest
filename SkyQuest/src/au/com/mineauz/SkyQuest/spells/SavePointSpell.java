@@ -47,7 +47,7 @@ public class SavePointSpell extends SpellBase
 	@Override
 	public int getExpCost() 
 	{
-		return 0;
+		return 4;
 	}
 
 	@Override
