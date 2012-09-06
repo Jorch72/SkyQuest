@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.SkyQuest.Book;
+import au.com.mineauz.SkyQuest.SkyQuestPlugin;
 import au.com.mineauz.SkyQuest.quests.Quest;
 import au.com.mineauz.SkyQuest.quests.QuestFactory;
 
@@ -17,7 +18,7 @@ public class BlankQuestPedestal extends PedestalBase{
 	}
 	
 	public BlankQuestPedestal(){
-		
+		super();
 	}
 
 	@Override
@@ -39,8 +40,14 @@ public class BlankQuestPedestal extends PedestalBase{
 			if(successful){
 				QuestFactory.addQuest(quest.getQuestName(), quest);
 				Location loc = this.getLocation();
-				this.getLocation().getBlock().breakNaturally();
+				
+				Pedestals.removePedestal(loc);
+				loc.getBlock().setType(Material.AIR);
+				
 				Pedestals.addPedestal(new QuestPedestal(quest.getQuestName(), loc));
+				SkyQuestPlugin.instance.saveData();
+				//player.getItemInHand().setType(Material.AIR);
+				player.sendMessage("The quest \"" + quest.getQuestName() + "\" was successfully created!");
 			}
 			else
 				player.sendMessage(ChatColor.RED + "Error: " + problem);

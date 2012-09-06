@@ -23,6 +23,7 @@ public class Pedestals
 		registerPedestalType("Debug", DebugPedestal.class);
 		registerPedestalType("Save", SavePedestal.class);
 		registerPedestalType("Quest", QuestPedestal.class);
+		registerPedestalType("BlankQuest", BlankQuestPedestal.class);
 	}
 	/**
 	 * Registers a pedestal type

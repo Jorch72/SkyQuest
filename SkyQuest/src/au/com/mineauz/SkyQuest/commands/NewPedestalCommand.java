@@ -50,14 +50,15 @@ public class NewPedestalCommand implements ICommand{
 			target.setY(target.getY() + 1);
 			if(args[0].equalsIgnoreCase("savepoint")){
 				Pedestals.addPedestal(new SavePedestal(target));
+				SkyQuestPlugin.instance.saveData();
 			}
 			else if(args[0].equalsIgnoreCase("questpoint")){
 				Pedestals.addPedestal(new BlankQuestPedestal(target));
+				SkyQuestPlugin.instance.saveData();
 			}
 			else{
 				player.sendMessage(ChatColor.RED + "Invalid pedestal type!");
 			}
-			SkyQuestPlugin.instance.saveData();
 		}
 		else
 		{
