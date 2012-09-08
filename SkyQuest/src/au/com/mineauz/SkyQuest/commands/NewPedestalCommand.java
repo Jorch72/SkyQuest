@@ -30,7 +30,8 @@ public class NewPedestalCommand implements ICommand{
 
 	@Override
 	public String getUsageString(String label) {
-		return "Creates a pedestal where you are looking";
+		return label + " <type>";
+		//return "Creates a pedestal where you are looking";
 	}
 
 	@Override
@@ -42,6 +43,9 @@ public class NewPedestalCommand implements ICommand{
 	public boolean onCommand(CommandSender sender, String label, String[] args) {
 		
 		Player player = (Player)sender;
+		
+		if(args.length != 1)
+			return false;
 		
 		Location target = player.getTargetBlock(null, 25).getLocation();
 		

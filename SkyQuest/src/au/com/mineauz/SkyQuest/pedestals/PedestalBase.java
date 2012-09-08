@@ -36,9 +36,11 @@ public abstract class PedestalBase
 	private ItemStack mHoverItemTemplate;
 	private Location mLocation;
 	private PedestalListener mEventListener;
+	private boolean mIsLoaded;
 	
 	protected PedestalBase(ItemStack pedistalType, ItemStack hoverItem, Location pedestalLocation)
 	{
+		mIsLoaded = true;
 		mLocation = pedestalLocation.clone();
 		mLocation.getBlock().setTypeIdAndData(pedistalType.getTypeId(), pedistalType.getData().getData(), true);
 		
@@ -75,7 +77,7 @@ public abstract class PedestalBase
 	 */
 	protected PedestalBase()
 	{
-		
+		mIsLoaded = true;
 	}
 			
 	/**
@@ -107,6 +109,13 @@ public abstract class PedestalBase
 			mHoveringItem.remove();
 			mHoveringItem = null;
 		}
+		
+		if(mEventListener != null)
+		{
+			mEventListener = null;
+		}
+		
+		mIsLoaded = false;
 	}
 	
 	/**
@@ -171,6 +180,8 @@ public abstract class PedestalBase
 		@EventHandler(priority = EventPriority.HIGHEST)
 		private void onItemDecay(ItemDespawnEvent event)
 		{
+			if(!mIsLoaded)
+				return;
 			if(mHoveringItem != null && event.getEntity().getEntityId() == mHoveringItem.getEntityId())
 				event.setCancelled(true);
 		}
@@ -181,6 +192,8 @@ public abstract class PedestalBase
 		@EventHandler(priority = EventPriority.HIGHEST)
 		private void onItemPickup(PlayerPickupItemEvent event)
 		{
+			if(!mIsLoaded)
+				return;
 			if(mHoveringItem != null && event.getItem().getEntityId() == mHoveringItem.getEntityId())
 				event.setCancelled(true);
 		}
@@ -191,6 +204,8 @@ public abstract class PedestalBase
 		@EventHandler
 		private void onChunkUnload(ChunkUnloadEvent event)
 		{
+			if(!mIsLoaded)
+				return;
 			if(event.getChunk() == mLocation.getChunk())
 			{
 				onRemove();
@@ -202,6 +217,8 @@ public abstract class PedestalBase
 		@EventHandler
 		private void onChunkLoad(ChunkLoadEvent event)
 		{
+			if(!mIsLoaded)
+				return;
 			if(event.getChunk() == mLocation.getChunk())
 			{
 				onRemove();
@@ -215,6 +232,8 @@ public abstract class PedestalBase
 		@EventHandler
 		private void onWorldUnload(WorldUnloadEvent event)
 		{
+			if(!mIsLoaded)
+				return;
 			if(event.getWorld() == mLocation.getWorld())
 			{
 				onRemove();
@@ -226,6 +245,8 @@ public abstract class PedestalBase
 		@EventHandler
 		private void onWorldLoad(WorldLoadEvent event)
 		{
+			if(!mIsLoaded)
+				return;
 			if(event.getWorld() == mLocation.getWorld() && mLocation.getChunk().isLoaded())
 			{
 				onRemove();
@@ -238,6 +259,8 @@ public abstract class PedestalBase
 		@EventHandler
 		private void onBlockBreak(BlockBreakEvent event)
 		{
+			if(!mIsLoaded)
+				return;
 			if(event.getBlock().getWorld() == mLocation.getWorld())
 			{
 				if(event.getBlock().getLocation().distanceSquared(mLocation) < 1D)
@@ -252,9 +275,16 @@ public abstract class PedestalBase
 		@EventHandler
 		private void onPlayerInteract(PlayerInteractEvent event)
 		{
-			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasBlock()/* && event.getClickedBlock().getLocation().distanceSquared(mLocation) < 1D*/) //What was the point of that check?
+			if(!mIsLoaded)
+				return;
+			if(mLocation.getWorld() != event.getPlayer().getWorld())
+				return;
+			
+			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasBlock() && event.getClickedBlock().getLocation().distanceSquared(mLocation) < 1D)
 			{
 				onPlayerActivatePedestal(event.getPlayer());
+				//event.setUseInteractedBlock(Result.DENY);
+				event.setCancelled(true);
 			}
 		}
 	}

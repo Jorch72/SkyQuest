@@ -21,6 +21,7 @@ public class BlankQuestPedestal extends PedestalBase{
 		super();
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onPlayerActivatePedestal(Player player) {
 		if(player.getItemInHand().getType() == Material.BOOK_AND_QUILL){
@@ -33,21 +34,37 @@ public class BlankQuestPedestal extends PedestalBase{
 				successful = true;
 			}
 			catch(IllegalArgumentException e){
-				problem = e.getCause().getMessage();
+				problem = e.getMessage();
 				successful = false;
 			}
 			
 			if(successful){
-				QuestFactory.addQuest(quest.getQuestName(), quest);
+				quest.QuestID = Quest.makeSafeQuestName(quest.getQuestName()); 
+				if(!QuestFactory.addQuest(quest.QuestID, quest))
+				{
+					Quest existingQuest = QuestFactory.getQuest(quest.QuestID);
+					if(existingQuest == null)
+					{
+						player.sendMessage(ChatColor.RED + "Internal Error");
+						SkyQuestPlugin.instance.getLogger().severe("Failed to add quest " + quest.QuestID + " but also failed to find it in the existing quests");
+						return;
+					}
+					else
+					{
+						existingQuest.updateFromTemplate(questBook);
+						quest = existingQuest;
+					}
+				}
 				Location loc = this.getLocation();
 				
-				Pedestals.removePedestal(loc);
-				loc.getBlock().setType(Material.AIR);
+				if(!Pedestals.removePedestal(loc))
+					SkyQuestPlugin.instance.getLogger().fine("Failed to remove pedestal");
 				
-				Pedestals.addPedestal(new QuestPedestal(quest.getQuestName(), loc));
+				Pedestals.addPedestal(new QuestPedestal(quest.QuestID, loc));
 				SkyQuestPlugin.instance.saveData();
-				//player.getItemInHand().setType(Material.AIR);
-				player.sendMessage("The quest \"" + quest.getQuestName() + "\" was successfully created!");
+				player.setItemInHand(null);
+				player.updateInventory();
+				player.sendMessage(ChatColor.GREEN + "The quest \"" + quest.QuestID + "\" was successfully created!");
 			}
 			else
 				player.sendMessage(ChatColor.RED + "Error: " + problem);

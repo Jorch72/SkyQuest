@@ -21,12 +21,7 @@ public class Quest
 	 */
 	public Quest(Book templateBook)
 	{
-		try{
-			updateFromTemplate(templateBook);
-		}
-		catch(IllegalArgumentException e){
-			throw new IllegalArgumentException(e.getCause());
-		}
+		updateFromTemplate(templateBook);
 	}
 	public Quest() {}
 	
@@ -46,6 +41,8 @@ public class Quest
 			throw new IllegalArgumentException("Some pages have been removed from the template");
 		
 		mQuestName = pages[1].substring(pages[1].indexOf('\n') + 1).trim();
+		if(mQuestName.isEmpty())
+			throw new IllegalArgumentException("The quest name cannot be empty");
 		
 		String temp = pages[2].substring(pages[2].indexOf('\n') + 1).trim();
 		try
@@ -97,7 +94,10 @@ public class Quest
 		
 		return book;
 	}
-	
+	public static String makeSafeQuestName(String name)
+	{
+		return name.toLowerCase().trim().replace(" ", "_").replaceAll("[!@#\\$%\\^&\\*\\(\\)\\+\\-=\\|\\\\\\{\\}\\[\\];':\",\\./<>\\?]", "");
+	}
 	public void writeToNBT(NBTTagCompound root)
 	{
 		root.setString("Name", mQuestName);

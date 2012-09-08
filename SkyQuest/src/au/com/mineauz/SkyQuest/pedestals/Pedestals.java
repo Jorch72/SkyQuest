@@ -8,6 +8,8 @@ import net.minecraft.server.NBTTagList;
 
 import org.bukkit.Location;
 
+import au.com.mineauz.SkyQuest.SkyQuestPlugin;
+
 /**
  * This class keeps track of current pedestals
  * @author Schmoller
@@ -48,7 +50,17 @@ public class Pedestals
 	 */
 	public static boolean removePedestal(Location pedestalLocation)
 	{
-		return (mPedestals.remove(pedestalLocation) != null);
+		// Cant use the remove method directly because it compares the references
+		for(Location loc : mPedestals.keySet())
+		{
+			if(loc.getWorld() == pedestalLocation.getWorld() && loc.distanceSquared(pedestalLocation) < 1D)
+			{
+				mPedestals.get(loc).onRemove();
+				mPedestals.remove(loc);
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -89,6 +101,7 @@ public class Pedestals
 			{
 				pedestal = mPedestalTypes.get(tag.getString("Type").toLowerCase()).newInstance();
 				pedestal.readFromNBT(tag);
+				SkyQuestPlugin.instance.getLogger().fine("Loaded pedestal: " + tag.getString("Type").toLowerCase() + " at " + pedestal.getLocation().toString());
 				mPedestals.put(pedestal.getLocation(), pedestal);
 			} 
 			catch (InstantiationException | IllegalAccessException e) 
