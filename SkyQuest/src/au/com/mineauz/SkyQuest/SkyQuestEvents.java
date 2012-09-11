@@ -24,6 +24,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
 import au.com.mineauz.SkyQuest.pedestals.DebugPedestal;
@@ -32,7 +34,7 @@ import au.com.mineauz.SkyQuest.spells.SpellBase;
 
 public class SkyQuestEvents implements Listener{
 	
-	private Map<OfflinePlayer, ItemStack> droppedBook = new HashMap<OfflinePlayer, ItemStack>(); //TODO: Probably move this to a Data class.
+	private Map<OfflinePlayer, ItemStack> droppedBook = new HashMap<OfflinePlayer, ItemStack>();
     
     @EventHandler
 	private void onRightClickGround(PlayerInteractEvent event)
@@ -79,8 +81,15 @@ public class SkyQuestEvents implements Listener{
     {
     	if(droppedBook.containsKey(event.getPlayer())){
     		//If the player had died with a magic book, give it back to them.
-    		// TODO: Make sure they have room for the book
-    		event.getPlayer().getInventory().addItem(droppedBook.get(event.getPlayer()));
+    		Player ply = event.getPlayer();
+    		ItemStack mb = droppedBook.get(event.getPlayer());
+    		event.getPlayer().getInventory().addItem(mb);
+    		if(!ply.getInventory().addItem(mb).isEmpty()){
+				int rand = (int) Math.round(Math.random() * (ply.getInventory().getSize() - 1));
+				ItemStack itemst = ply.getInventory().getItem(rand);
+				ply.getInventory().setItem(rand, mb);
+				ply.getWorld().dropItem(ply.getLocation(), itemst);
+			}
     		event.getPlayer().sendMessage(ChatColor.LIGHT_PURPLE + "Your magic book was dropped and found its way back to you!");
     		droppedBook.remove(event.getPlayer());
     	}
@@ -95,8 +104,12 @@ public class SkyQuestEvents implements Listener{
     			
     			if(Bukkit.getServer().getPlayerExact(owner) != null){
     				Player ply = Bukkit.getServer().getPlayer(owner);
-    				// TODO: Make sure they have room for the book
-    				ply.getInventory().addItem(mb);
+    				if(!ply.getInventory().addItem(mb).isEmpty()){
+    					int rand = (int) Math.round(Math.random() * (ply.getInventory().getSize() - 1));
+    					ItemStack itemst = ply.getInventory().getItem(rand);
+    					ply.getInventory().setItem(rand, mb);
+    					ply.getWorld().dropItem(ply.getLocation(), itemst);
+    				}
     				ply.sendMessage(ChatColor.LIGHT_PURPLE + "Your magic book was dropped and found its way back to you!");
     			}
     			else{
@@ -129,6 +142,17 @@ public class SkyQuestEvents implements Listener{
     			spell.onActivate(book, event.getPlayer());
     			event.setMessage(ChatColor.MAGIC + event.getMessage());
     			break;
+    		}
+    	}
+    }
+    
+    @EventHandler
+    private void playerTeleport(PlayerTeleportEvent event){
+    	if(event.getCause() == TeleportCause.ENDER_PEARL || event.getCause() == TeleportCause.COMMAND){
+    		if(event.getTo().getWorld().getName().equalsIgnoreCase("skylands")){
+    			event.setCancelled(true);
+    			//TODO Temporary fix to teleporting issues that may arise via other plugins. For example people setting home in the skylands.
+    			//Might recommend a variable that allows players to teleport under certain circumstances if required
     		}
     	}
     }

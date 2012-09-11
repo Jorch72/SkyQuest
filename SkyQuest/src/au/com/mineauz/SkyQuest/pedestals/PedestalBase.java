@@ -99,6 +99,10 @@ public abstract class PedestalBase
 		return mLocation;
 	}
 	
+	public ItemStack getItemStack(){
+		return mHoverItemTemplate;
+	}
+	
 	/**
 	 * Called if the chunk is unloaded, the plugin is unloaded, etc.
 	 */
