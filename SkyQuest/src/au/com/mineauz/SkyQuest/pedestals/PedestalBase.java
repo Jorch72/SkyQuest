@@ -100,7 +100,7 @@ public abstract class PedestalBase
 	}
 	
 	public ItemStack getItemStack(){
-		return mHoverItemTemplate;
+		return mHoverItemTemplate.clone();
 	}
 	
 	/**
