@@ -13,6 +13,10 @@ import au.com.mineauz.SkyQuest.spells.WarpSpell;
 
 public class DebugPedestal extends PedestalBase
 {
+	static
+	{
+		WarpSpell.addWarpDestination("Test");
+	}
 	public DebugPedestal(Location pedestalLocation) 
 	{
 		super(new ItemStack(Material.SMOOTH_BRICK,1,(short)3), new ItemStack(Material.WRITTEN_BOOK), pedestalLocation);
@@ -47,16 +51,19 @@ public class DebugPedestal extends PedestalBase
 				if(MagicBook.isMagicBook(ent.getValue()))
 				{
 					MagicBook book = new MagicBook(ent.getValue());
-					//book.addTestPage();
-					WarpSpell spell = new WarpSpell("Test");
-					if(!book.hasLearnedSpell(spell))
+
+					// Add the warp spell base
+					WarpSpell spell = new WarpSpell();
+					int subtype = WarpSpell.getWarpId("Test");
+					
+					if(!book.hasLearnedSpell(spell,subtype))
 					{
-						book.learnSpell(spell, false);
+						book.learnSpell(spell, subtype, false);
 					}
+					
 					
 					player.getInventory().setItem(ent.getKey(), book);
 					player.updateInventory();
-					player.sendMessage("Added a page to your magic book");
 					found = true;
 					break;
 				}

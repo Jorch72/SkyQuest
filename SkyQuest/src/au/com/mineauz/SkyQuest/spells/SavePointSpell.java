@@ -15,13 +15,15 @@ public class SavePointSpell extends SpellBase
 	}
 
 	@Override
-	public boolean onActivate(MagicBook book, Player forPlayer) 
+	public boolean onActivate(MagicBook book, Player forPlayer, int subtype) 
 	{
+		super.onActivate(book, forPlayer, subtype);
 		forPlayer.getWorld().playEffect(forPlayer.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		forPlayer.getWorld().playSound(forPlayer.getLocation(), Sound.FIRE_IGNITE, 10, 1);
 		forPlayer.teleport(Util.stringToLocation(book.getHandle().tag.getString("SavePoint")));
 		forPlayer.getWorld().playEffect(forPlayer.getLocation(), Effect.MOBSPAWNER_FLAMES, 0);
 		forPlayer.getWorld().playSound(forPlayer.getLocation(), Sound.FIRE_IGNITE, 10, 1);
+		
 		return true;
 	}
 	
@@ -33,7 +35,7 @@ public class SavePointSpell extends SpellBase
 	}
 
 	@Override
-	public String getIncantation() 
+	public String getIncantation(int subtype) 
 	{
 		return "Vade ad Salvare";
 	}
@@ -45,7 +47,7 @@ public class SavePointSpell extends SpellBase
 	}
 
 	@Override
-	public int getExpCost() 
+	public int getExpCost(int subtype) 
 	{
 		return 4;
 	}
@@ -53,8 +55,29 @@ public class SavePointSpell extends SpellBase
 	@Override
 	public String getDescription() 
 	{
-		return "Say the following chant to be returned to this point at the cost of " + getExpCost() + " XP:\n" +
-				ChatColor.LIGHT_PURPLE + getIncantation();
+		return "Say the following chant to be returned to this point at the cost of " + getExpCost(-1) + " XP:\n" +
+				ChatColor.LIGHT_PURPLE + getIncantation(-1);
 	}
+
+	@Override
+	public boolean hasSubTypes() 
+	{
+		return false;
+	}
+
+	@Override
+	public String getNameSubtype(int subtype) 
+	{
+		return getName();
+	}
+
+	@Override
+	public String getUnlockString(int subtype) 
+	{
+		return "";
+	}
+
+	@Override
+	public void onLearnSubType(MagicBook book, Player forPlayer, int subtype) {}
 	
 }

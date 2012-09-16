@@ -34,9 +34,9 @@ public class SavePedestal extends PedestalBase{
 			{
 				MagicBook book = new MagicBook(ent.getValue());
 				SavePointSpell spell = new SavePointSpell();
-				if(!book.hasLearnedSpell(spell))
+				if(!book.hasLearnedSpell(spell,-1))
 				{
-					book.learnSpell(spell, false);
+					book.learnSpell(spell,-1, false);
 				}
 				else
 				{

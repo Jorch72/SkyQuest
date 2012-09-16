@@ -83,7 +83,7 @@ public class SkyQuestEvents implements Listener{
     		//If the player had died with a magic book, give it back to them.
     		Player ply = event.getPlayer();
     		ItemStack mb = droppedBook.get(event.getPlayer());
-    		event.getPlayer().getInventory().addItem(mb);
+    		//event.getPlayer().getInventory().addItem(mb);
     		if(!ply.getInventory().addItem(mb).isEmpty()){
 				int rand = (int) Math.round(Math.random() * (ply.getInventory().getSize() - 1));
 				ItemStack itemst = ply.getInventory().getItem(rand);
@@ -137,11 +137,27 @@ public class SkyQuestEvents implements Listener{
     	
     	for(SpellBase spell : knownSpells)
     	{
-    		if(spell.canCastSpell(event.getPlayer()) && Util.fuzzyStringMatch(spell.getIncantation(), event.getMessage()))
+    		if(spell.hasSubTypes())
     		{
-    			spell.onActivate(book, event.getPlayer());
-    			event.setMessage(ChatColor.MAGIC + event.getMessage());
-    			break;
+    			List<Integer> knownSubTypes = book.getLearnedSpellSubTypes(spell);
+    			for(Integer subtype : knownSubTypes)
+    			{
+    				if(spell.canCastSpell(event.getPlayer(),subtype) && Util.fuzzyStringMatch(spell.getIncantation(subtype), event.getMessage()))
+    	    		{
+    	    			spell.onActivate(book, event.getPlayer(), subtype);
+    	    			event.setMessage(ChatColor.MAGIC + event.getMessage());
+    	    			break;
+    	    		}
+    			}
+    		}
+    		else
+    		{
+	    		if(spell.canCastSpell(event.getPlayer(),-1) && Util.fuzzyStringMatch(spell.getIncantation(-1), event.getMessage()))
+	    		{
+	    			spell.onActivate(book, event.getPlayer());
+	    			event.setMessage(ChatColor.MAGIC + event.getMessage());
+	    			break;
+	    		}
     		}
     	}
     }
