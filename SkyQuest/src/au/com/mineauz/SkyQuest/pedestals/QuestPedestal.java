@@ -13,6 +13,7 @@ import au.com.mineauz.SkyQuest.SkyQuestPlugin;
 import au.com.mineauz.SkyQuest.Util;
 import au.com.mineauz.SkyQuest.quests.Quest;
 import au.com.mineauz.SkyQuest.quests.QuestFactory;
+import au.com.mineauz.SkyQuest.spells.SpellFactory;
 
 public class QuestPedestal extends PedestalBase
 {
@@ -46,6 +47,14 @@ public class QuestPedestal extends PedestalBase
 		
 		if(!book.hasCompletedQuest(quest))
 			book.markQuestComplete(quest);
+		
+		if(quest.getSpellsLearned() != null && !quest.getSpellsLearned().isEmpty()){
+			for(String spell : quest.getSpellsLearned()){
+				if(SpellFactory.getSpell(spell) != null){
+					//TODO Check if player has learned the spell
+				}
+			}
+		}
 	}
 
 	@Override

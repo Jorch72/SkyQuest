@@ -49,7 +49,7 @@ public class NewPedestalCommand implements ICommand{
 		
 		Player player = (Player)sender;
 		
-		if(args.length >= 3)
+		if(args.length >= 4)
 			return false;
 		
 		Bukkit.getLogger().log(Level.INFO, args[0] + " " + args[1]);
@@ -67,7 +67,7 @@ public class NewPedestalCommand implements ICommand{
 				Pedestals.addPedestal(new BlankQuestPedestal(target));
 				SkyQuestPlugin.instance.saveData();
 			}
-			else if(args.length == 2 && args[0].equalsIgnoreCase("item")){
+			else if(args.length >= 2 && args[0].equalsIgnoreCase("item")){
 				String item = null;
 				short data = 0;
 				boolean error = false;
@@ -97,6 +97,10 @@ public class NewPedestalCommand implements ICommand{
 					}
 					else{
 						error = true;
+					}
+					
+					if(args.length == 3 && args[2].matches("[0-9]+")){
+						itemstack.setAmount(Integer.parseInt(args[2]));
 					}
 					
 					if(!error){

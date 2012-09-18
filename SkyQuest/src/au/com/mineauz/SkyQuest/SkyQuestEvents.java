@@ -7,7 +7,6 @@ import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
@@ -16,27 +15,23 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.ItemStack;
 
-import au.com.mineauz.SkyQuest.pedestals.DebugPedestal;
-import au.com.mineauz.SkyQuest.pedestals.Pedestals;
 import au.com.mineauz.SkyQuest.spells.SpellBase;
 
 public class SkyQuestEvents implements Listener{
 	
 	private Map<OfflinePlayer, ItemStack> droppedBook = new HashMap<OfflinePlayer, ItemStack>();
     
-    @EventHandler
+    /*@EventHandler
 	private void onRightClickGround(PlayerInteractEvent event)
 	{
 		// Test of pedestal creation
@@ -45,7 +40,7 @@ public class SkyQuestEvents implements Listener{
 			Location loc = event.getClickedBlock().getRelative(event.getBlockFace(), 1).getLocation();
 			Pedestals.addPedestal(new DebugPedestal(loc));
 		}
-	}
+	}*/ //Not needed anymore?
     
     @EventHandler
     private void playerDeath(PlayerDeathEvent event){

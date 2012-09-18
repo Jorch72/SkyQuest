@@ -22,7 +22,6 @@ public class ItemPedestal extends PedestalBase{
 		plyList = new NBTTagList();
 	}
 	public ItemPedestal(){
-		super();
 	}
 
 	@Override
@@ -43,7 +42,10 @@ public class ItemPedestal extends PedestalBase{
 			else{
 				player.getInventory().addItem(getItemStack());
 				plyList.add(new NBTTagString(player.getName(), player.getName()));
-				player.sendMessage("You have found a " + this.getItemStack().getType().toString().replace("_", " ").toLowerCase());
+				if(getItemStack().getAmount() == 1)
+					player.sendMessage("You have found a " + this.getItemStack().getType().toString().replace("_", " ").toLowerCase());
+				else
+					player.sendMessage("You have found " + getItemStack().getAmount() + " " + this.getItemStack().getType().toString().replace("_", " ").toLowerCase());
 			}
 		}
 	}
