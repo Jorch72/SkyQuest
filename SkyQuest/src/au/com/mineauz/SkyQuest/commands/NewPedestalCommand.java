@@ -1,8 +1,5 @@
 package au.com.mineauz.SkyQuest.commands;
 
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,7 +11,9 @@ import au.com.mineauz.SkyQuest.SkyQuestPlugin;
 import au.com.mineauz.SkyQuest.pedestals.BlankQuestPedestal;
 import au.com.mineauz.SkyQuest.pedestals.ItemPedestal;
 import au.com.mineauz.SkyQuest.pedestals.Pedestals;
+import au.com.mineauz.SkyQuest.pedestals.QuestStartPedestal;
 import au.com.mineauz.SkyQuest.pedestals.SavePedestal;
+import au.com.mineauz.SkyQuest.quests.QuestFactory;
 
 public class NewPedestalCommand implements ICommand{
 
@@ -52,8 +51,6 @@ public class NewPedestalCommand implements ICommand{
 		if(args.length >= 4)
 			return false;
 		
-		Bukkit.getLogger().log(Level.INFO, args[0] + " " + args[1]);
-		
 		Location target = player.getTargetBlock(null, 25).getLocation();
 		
 		if(target != null && target.getBlock().getType() != Material.AIR)
@@ -66,6 +63,15 @@ public class NewPedestalCommand implements ICommand{
 			else if(args[0].equalsIgnoreCase("questpoint")){
 				Pedestals.addPedestal(new BlankQuestPedestal(target));
 				SkyQuestPlugin.instance.saveData();
+			}
+			else if(args.length == 2 && args[0].equalsIgnoreCase("queststart")){
+				if(QuestFactory.getQuest(args[1].toLowerCase()) == null){
+					player.sendMessage(ChatColor.RED + "Invalid quest name!");
+				}
+				else{
+					Pedestals.addPedestal(new QuestStartPedestal(args[1], target));
+					SkyQuestPlugin.instance.saveData();
+				}
 			}
 			else if(args.length >= 2 && args[0].equalsIgnoreCase("item")){
 				String item = null;

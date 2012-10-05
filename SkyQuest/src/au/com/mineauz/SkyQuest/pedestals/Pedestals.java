@@ -27,6 +27,7 @@ public class Pedestals
 		registerPedestalType("Quest", QuestPedestal.class);
 		registerPedestalType("BlankQuest", BlankQuestPedestal.class);
 		registerPedestalType("Item", ItemPedestal.class);
+		registerPedestalType("QuestStart", QuestStartPedestal.class);
 	}
 	/**
 	 * Registers a pedestal type

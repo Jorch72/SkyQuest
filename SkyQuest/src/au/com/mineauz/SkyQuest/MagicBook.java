@@ -267,5 +267,49 @@ public class MagicBook extends Book
 		
 		return list;
 	}
+	
+	public void addQuestInProgress(Quest quest){
+		NBTTagList quests = getHandle().tag.getList("QuestsInProgress");
+		
+		if(quests == null)
+			quests = new NBTTagList();
+		
+		if(!hasQuestInProgress(quest)){
+			quests.add(new NBTTagString(quest.QuestID,quest.QuestID));
+			getHandle().tag.set("QuestsInProgress", quests);
+		}
+	}
+	
+	public void removeQuestInProgress(Quest quest){
+		NBTTagList quests = getHandle().tag.getList("QuestsInProgress");
+		
+		if(quests == null)
+			return;
+		
+		if(hasQuestInProgress(quest)){
+			NBTTagList questsNew = new NBTTagList();
+			for(int i = 0; i < quests.size(); i++){
+				if(!((NBTTagString) quests.get(i)).data.equalsIgnoreCase(quest.QuestID)){
+					questsNew.add((NBTTagString) quests.get(i));
+				}
+				getHandle().tag.set("QuestsInProgress", questsNew);
+			}
+		}
+	}
+	
+	public boolean hasQuestInProgress(Quest quest){
+		NBTTagList quests = getHandle().tag.getList("QuestsInProgress");
+		
+		if(quests == null){
+			return false;
+		}
+		
+		for(int i = 0; i < quests.size(); i++){
+			if(((NBTTagString) quests.get(i)).data.equalsIgnoreCase(quest.QuestID))
+				return true;
+		}
+		
+		return false;
+	}
 			
 }

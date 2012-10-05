@@ -100,9 +100,9 @@ public class Quest
 		book.addPage("Experience Gain (Integer):\n" + mExpGain);
 		
 		String spells = "";
-		for(int i = 0; i < mSpellsLearned.size(); i++){
-			spells += mSpellsLearned.get(i);
-			if(i != mSpellsLearned.size() - 1){
+		for(int i = 0; i < getSpellsLearned().size(); i++){
+			spells += getSpellsLearned().get(i);
+			if(i != getSpellsLearned().size() - 1){
 				spells += ", ";
 			}
 		}
@@ -117,6 +117,10 @@ public class Quest
 		return mQuestName;
 	}
 	
+	public String getQuestStory(){
+		return mQuestStory;
+	}
+	
 	public int getExpGain()
 	{
 		return mExpGain;
@@ -128,7 +132,10 @@ public class Quest
 			String spellname = split[0];
 			int spellSubtype = Integer.parseInt(split[1]);
 		}*/ //TODO return spells correctly
-		return mSpellsLearned;
+		if(mSpellsLearned != null){
+			return mSpellsLearned;
+		}
+		return new ArrayList<String>();
 	}
 	
 	public static ItemStack makeQuestTemplateBook()
