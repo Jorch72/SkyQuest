@@ -50,8 +50,11 @@ public class QuestPedestal extends PedestalBase
 		
 		if(quest.getSpellsLearned() != null && !quest.getSpellsLearned().isEmpty()){
 			for(String spell : quest.getSpellsLearned()){
-				if(SpellFactory.getSpell(spell) != null){
-					//TODO Check if player has learned the spell
+				String[] spellsplit = spell.split(":");
+				String spellname = spellsplit[0];
+				int subtype = Integer.parseInt(spellsplit[1]);
+				if(SpellFactory.getSpell(spellname) != null && !book.hasLearnedSpell(SpellFactory.getSpell(spellname), subtype)){
+					book.learnSpell(SpellFactory.getSpell(spellname), subtype, false);
 				}
 			}
 		}

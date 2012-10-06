@@ -48,7 +48,7 @@ public class WarpSpell extends SpellBase
 
 	@Override
 	public int getExpCost(int subType) {
-		return 8;
+		return 4;
 	}
 
 	@Override

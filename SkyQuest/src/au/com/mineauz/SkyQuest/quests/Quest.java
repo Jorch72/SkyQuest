@@ -127,11 +127,6 @@ public class Quest
 	}
 	
 	public List<String> getSpellsLearned(){
-		/*for(String spell : mSpellsLearned){
-			String[] split = spell.split(":");
-			String spellname = split[0];
-			int spellSubtype = Integer.parseInt(split[1]);
-		}*/ //TODO return spells correctly
 		if(mSpellsLearned != null){
 			return mSpellsLearned;
 		}

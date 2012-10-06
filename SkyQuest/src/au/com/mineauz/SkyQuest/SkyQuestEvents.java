@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -164,6 +165,16 @@ public class SkyQuestEvents implements Listener{
     			event.setCancelled(true);
     			//TODO Temporary fix to teleporting issues that may arise via other plugins. For example people setting home in the skylands.
     			//Might recommend a variable that allows players to teleport under certain circumstances if required
+    		}
+    	}
+    }
+    
+    @EventHandler
+    private void playerPlaceInInventory(InventoryClickEvent event){
+    	if(MagicBook.isMagicBook(event.getCursor())){
+    		MagicBook book = Util.getMagicBookFor((Player)event.getWhoClicked());
+    		if(book.getOwner() != event.getWhoClicked().getName()){
+    			event.setCancelled(true);
     		}
     	}
     }
